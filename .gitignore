@@ -1,3 +1,8 @@
+**/*.out
+**/*.err
+**/*.com
+**/*.log
+**/.DS_Store
 Tanimoto_sort.py
 Tanimoto_score_smiles.py 
 Tanimoto_250K.Tanimoto_score_smiles
