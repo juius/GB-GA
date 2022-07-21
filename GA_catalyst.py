@@ -60,6 +60,14 @@ def slurm_scoring(sc_function, population, ids, cpus_per_task=4, cleanup=False):
     return results
 
 
+def catch(func, *args, handle=lambda e: e, **kwargs):
+    try:
+        return func(*args, **kwargs)
+    except Exception as e:
+        print(e)
+        return handle(e)
+
+
 def make_initial_population(population_size, file_name, random=True):
     if random:
         with open(file_name) as fin:
@@ -254,7 +262,7 @@ def GA(args):
         f.writelines([str(Chem.MolToSmiles(m) for m in molecules)])
 
     ids = [(0, i) for i in range(len(molecules))]
-    results = sc.slurm_scoring(scoring_function, molecules, ids)
+    results = slurm_scoring(scoring_function, molecules, ids)
     energies = [res[0] for res in results]
     geometries = [res[1] for res in results]
 
@@ -298,7 +306,7 @@ def GA(args):
             generation + 1,
         )
 
-        new_resuls = sc.slurm_scoring(
+        new_resuls = slurm_scoring(
             scoring_function,
             [ind.rdkit_mol for ind in new_population],
             [ind.idx for ind in new_population],
